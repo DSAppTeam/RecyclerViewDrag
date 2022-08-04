@@ -54,7 +54,7 @@ afterEvaluate {
                 from components.release
                 // You can then customize attributes of the publication as shown below.
                 groupId = 'com.ds'
-                artifactId = 'Permission'
+                artifactId = 'rv_drag'
                 version = versionName
                 // 上传source，这样使用放可以看到方法注释
                 artifact generateSourcesJar
