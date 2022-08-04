@@ -20,7 +20,6 @@
 
 <img src="https://github.com/DSAppTeam/RecyclerViewDrag/blob/master/Screenshot/multiply_demo.gif" width = "360" height = "750">
 
-
 ## 配置
 
 1. 在项目根目录下的build.gradle添加 JitPack 仓库
@@ -34,7 +33,11 @@
    ```
 2. 在 **app** 目录下的build.gradle中添加依赖
 
-// TODO
+   ```groovy
+   dependencies {
+        implementation 'com.github.DSAppTeam:RecyclerViewDrag:1.0.0'
+   }
+   ```
 
 ## 如何使用
 
