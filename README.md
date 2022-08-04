@@ -10,15 +10,15 @@
 
 1、合并成文件夹
 
-![folder_demo](/Screenshot/folder_demo.gif)
+<img src="https://github.com/DSAppTeam/RecyclerViewDrag/blob/master/Screenshot/folder_demo.gif" width = "360" height = "750">
 
 2、合并执行加法
 
-![folder_demo](/Screenshot/addition_demo.gif)
+<img src="https://github.com/DSAppTeam/RecyclerViewDrag/blob/master/Screenshot/addition_demo.gif" width = "360" height = "750">
 
 3、合并执行乘法
 
-![folder_demo](/Screenshot/multiply_demo.gif)
+<img src="https://github.com/DSAppTeam/RecyclerViewDrag/blob/master/Screenshot/multiply_demo.gif" width = "360" height = "750">
 
 
 ## 配置
