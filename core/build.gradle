@@ -28,6 +28,11 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+
+    packagingOptions {
+        exclude 'META-INF/core_release.kotlin_module'
+    }
+
 }
 
 dependencies {
