@@ -46,7 +46,7 @@ dependencies {
 }
 
 
-def versionName = "1.0.0"
+def versionName = "1.0.2"
 
 // Because the components are created only during the afterEvaluate phase, you must
 // configure your publications using the afterEvaluate() lifecycle method.
