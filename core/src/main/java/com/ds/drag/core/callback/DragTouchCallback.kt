@@ -27,8 +27,8 @@ import kotlin.math.abs
 @Suppress("DEPRECATION")
 class DragTouchCallback(
     private val dragAdapter: IDragAdapter,
-    private val horizontal: Boolean = true,
-    private val vertical: Boolean = true
+    private val vertical: Boolean = true,
+    private val horizontal: Boolean = true
 ) : ItemTouchHelper.Callback() {
 
     companion object {
@@ -171,9 +171,9 @@ class DragTouchCallback(
             // 同时满足x、y轴法相的ViewHolder
             horizontal && vertical -> winnerSetX.find { winnerSetY.contains(it) }
             // 满足y轴法相的ViewHolder
-            horizontal -> winnerSetY.firstOrNull()
+            vertical -> winnerSetY.firstOrNull()
             // 满足x轴法相的ViewHolder
-            vertical -> winnerSetX.firstOrNull()
+            horizontal -> winnerSetX.firstOrNull()
             // default
             else -> null
         }

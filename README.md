@@ -35,7 +35,7 @@
 
    ```groovy
    dependencies {
-        implementation 'com.github.DSAppTeam:RecyclerViewDrag:1.0.2'
+        implementation 'com.github.DSAppTeam:RecyclerViewDrag:1.0.3'
    }
    ```
 

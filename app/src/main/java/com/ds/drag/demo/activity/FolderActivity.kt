@@ -59,7 +59,7 @@ class FolderActivity : AppCompatActivity() {
             showFolderList(dataList)
         }
         recyclerView.adapter = listAdapter
-        val itemTouchCallback = DragTouchCallback(listAdapter, horizontal = true, vertical = true)
+        val itemTouchCallback = DragTouchCallback(listAdapter, vertical = true, horizontal = false)
         val dragHandler = FolderHandlerImpl(recyclerView, listAdapter)
         // 合并操作回调
         dragHandler.mergedListener = { item ->
