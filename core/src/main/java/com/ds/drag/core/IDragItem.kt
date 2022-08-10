@@ -14,17 +14,17 @@ interface IDragItem {
     /**
      * 是否支持拖拽
      */
-    fun canDrag(): Boolean
+    fun canDrag(viewHolder: RecyclerView.ViewHolder): Boolean
 
     /**
      * 是否支持合并
      */
-    fun canMerge(): Boolean
+    fun canMerge(selected: RecyclerView.ViewHolder): Boolean
 
     /**
      * 是否可以接受合并
      */
-    fun acceptMerge(): Boolean
+    fun acceptMerge(target: RecyclerView.ViewHolder): Boolean
 
     /**
      * 显示合并预览效果，比如满足合并条件时高亮，加强交互体验

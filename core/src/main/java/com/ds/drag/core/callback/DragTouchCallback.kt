@@ -52,7 +52,7 @@ class DragTouchCallback(
 
     override fun getMovementFlags(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder): Int {
         val dragItem = dragAdapter.getDragItem(viewHolder)
-        val canDrag = dragItem?.canDrag() ?: false
+        val canDrag = dragItem?.canDrag(viewHolder) ?: false
         var dragFlags = 0
         if (canDrag) {
             if (vertical) {
@@ -198,8 +198,8 @@ class DragTouchCallback(
     private fun onStashMergeHolder(selected: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder) {
         val fromItem = dragAdapter.getDragItem(selected)
         val toItem = dragAdapter.getDragItem(target)
-        val canMerge = fromItem?.canMerge() ?: false
-        val canFold = toItem?.acceptMerge() ?: false
+        val canMerge = fromItem?.canMerge(selected) ?: false
+        val canFold = toItem?.acceptMerge(target) ?: false
         // 判断是否支持合并成文件夹
         if (canMerge && canFold) {
             if (mergeTarget != target) {

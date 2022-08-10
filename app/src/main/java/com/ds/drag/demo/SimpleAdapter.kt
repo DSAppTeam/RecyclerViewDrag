@@ -112,15 +112,15 @@ class PreviewViewHolder(itemView: View) : BaseDataVH(itemView) {
         itemView.tv_content.text = simpleData?.value?.toString()
     }
 
-    override fun canDrag(): Boolean {
+    override fun canDrag(viewHolder: RecyclerView.ViewHolder): Boolean {
         return false
     }
 
-    override fun canMerge(): Boolean {
+    override fun canMerge(selected: RecyclerView.ViewHolder): Boolean {
         return false
     }
 
-    override fun acceptMerge(): Boolean {
+    override fun acceptMerge(target: RecyclerView.ViewHolder): Boolean {
         return true
     }
 
@@ -146,16 +146,16 @@ class SimpleViewHolder(itemView: View) : BaseDataVH(itemView) {
         itemView.findViewById<TextView>(R.id.tv_content).text = "${simpleData.value}"
     }
 
-    override fun canDrag(): Boolean {
+    override fun canDrag(viewHolder: RecyclerView.ViewHolder): Boolean {
 
         return true
     }
 
-    override fun canMerge(): Boolean {
+    override fun canMerge(selected: RecyclerView.ViewHolder): Boolean {
         return true
     }
 
-    override fun acceptMerge(): Boolean {
+    override fun acceptMerge(target: RecyclerView.ViewHolder): Boolean {
 
         return true
     }
@@ -192,16 +192,16 @@ class FolderViewHolder(itemView: View) : BaseDataVH(itemView) {
         showMergePreview(this, false)
     }
 
-    override fun canDrag(): Boolean {
+    override fun canDrag(viewHolder: RecyclerView.ViewHolder): Boolean {
 
         return true
     }
 
-    override fun canMerge(): Boolean {
+    override fun canMerge(selected: RecyclerView.ViewHolder): Boolean {
         return false
     }
 
-    override fun acceptMerge(): Boolean {
+    override fun acceptMerge(target: RecyclerView.ViewHolder): Boolean {
 
         return true
     }
