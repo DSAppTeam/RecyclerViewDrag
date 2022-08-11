@@ -8,15 +8,19 @@
 
 ## 效果演示
 
-1、合并成文件夹
+1、拖拽应用方案
+
+<img src="https://github.com/DSAppTeam/RecyclerViewDrag/blob/master/Screenshot/ds_demo.gif" width = "360" height = "750">
+
+2、合并成文件夹
 
 <img src="https://github.com/DSAppTeam/RecyclerViewDrag/blob/master/Screenshot/folder_demo.gif" width = "360" height = "750">
 
-2、合并执行加法
+3、合并执行加法
 
 <img src="https://github.com/DSAppTeam/RecyclerViewDrag/blob/master/Screenshot/addition_demo.gif" width = "360" height = "750">
 
-3、合并执行乘法
+4、合并执行乘法
 
 <img src="https://github.com/DSAppTeam/RecyclerViewDrag/blob/master/Screenshot/multiply_demo.gif" width = "360" height = "750">
 
