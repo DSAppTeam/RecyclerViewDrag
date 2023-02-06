@@ -25,6 +25,7 @@
         <activity android:name=".activity.AdditionActivity" />
         <activity android:name=".activity.MultiplyActivity" />
         <activity android:name=".activity.NotDragHandlerImplActivity" />
+        <activity android:name=".activity.TestDragActivity" />
     </application>
 
 </manifest>

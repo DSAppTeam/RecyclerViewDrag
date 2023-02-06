@@ -39,6 +39,12 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this, NotDragHandlerImplActivity::class.java)
             startActivity(intent)
         }
+
+        btn_test.setOnClickListener {
+            val intent = Intent(this, TestDragActivity::class.java)
+            startActivity(intent)
+        }
+
     }
 
 }
