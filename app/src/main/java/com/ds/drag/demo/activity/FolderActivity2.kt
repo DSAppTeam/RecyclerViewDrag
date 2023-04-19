@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.os.SystemClock
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
@@ -13,12 +14,19 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.ds.drag.core.FolderData
+import com.ds.drag.core.IDragData
+import com.ds.drag.core.PreviewData
+import com.ds.drag.core.SimpleData
 import com.ds.drag.core.callback.DragTouchCallback
+import com.ds.drag.core.callback.DragTouchCallback.Companion.defaultFolderId
 import com.ds.drag.demo.*
 import com.ds.drag.demo.handler.FolderHandlerImpl
+import com.ds.drag.demo.handler.FolderInnerHandlerImpl
 import eightbitlab.com.blurview.RenderScriptBlur
 import kotlinx.android.synthetic.main.activity_folder.*
 import kotlinx.android.synthetic.main.activity_folder2.blur_view
+import kotlinx.android.synthetic.main.activity_folder2.blur_view2
 
 
 /**
@@ -37,7 +45,11 @@ class FolderActivity2 : AppCompatActivity() {
         recyclerView.getLocationInWindow(location)
         return@lazy location
     }
-
+    private val folderLocation: IntArray by lazy {
+        val location = IntArray(2)
+        recycler_view_folder.getLocationInWindow(location)
+        return@lazy location
+    }
     private var previewPosition = -1
 
     // 左侧列表
@@ -52,6 +64,7 @@ class FolderActivity2 : AppCompatActivity() {
         setContentView(R.layout.activity_folder2)
         initSimpleList()
         initFolderList()
+        blur_view.visibility=View.GONE
     }
 
 
@@ -60,19 +73,23 @@ class FolderActivity2 : AppCompatActivity() {
      */
     private fun initSimpleList() {
         recyclerView = findViewById(R.id.recycler_view)
-        recyclerView.layoutManager = GridLayoutManager(this,3,  LinearLayoutManager.VERTICAL,false)
+        recyclerView.layoutManager = GridLayoutManager(this,4,  LinearLayoutManager.VERTICAL,false)
         listAdapter.setData(getTestList())
         listAdapter.itemClickListener = { item ->
-            if(isExpandFolder){
-                isExpandFolder(false)
-            }else{
+//            if(isExpandFolder){
+//                isExpandFolder(false)
+//                blur_view.visibility=View.GONE
+//            }else{
                 if(item is FolderData){
                     selectedItem = item
                     val dataList = (item as? FolderData)?.list
                     showFolderList(dataList)
                 }
-            }
+          //  }
         }
+        blur_view.setOnClickListener {
+           // isExpandFolder(false)
+            blur_view.visibility=View.GONE }
         recyclerView.adapter = listAdapter
         val itemTouchCallback = DragTouchCallback(listAdapter, vertical = true, horizontal = true)
         val dragHandler = FolderHandlerImpl(recyclerView, listAdapter)
@@ -95,11 +112,13 @@ class FolderActivity2 : AppCompatActivity() {
         recycler_view_folder.layoutManager = GridLayoutManager(this,3,  LinearLayoutManager.VERTICAL,false)
         recycler_view_folder.adapter = folderAdapter
         // 拖拽位置监听，实现将文件夹的item拖回左侧列表
-        val itemTouchCallback = FolderItemDragCallback()
+        val itemTouchCallback = FolderItemDragCallback(folderAdapter)
         itemTouchCallback.itemLocationListener = { viewHolder, left, top, activity ->
             Log.d("FolderActivity", "initFolderList: left $left, top $top")
             notifyPreviewViewHolder(viewHolder, left, top, activity)
         }
+        val dragHandler = FolderInnerHandlerImpl(recycler_view_folder, folderAdapter,listAdapter)
+        itemTouchCallback.setDragHandler(dragHandler)
         ItemTouchHelper(itemTouchCallback).attachToRecyclerView(recycler_view_folder)
     }
     /**
@@ -123,6 +142,12 @@ class FolderActivity2 : AppCompatActivity() {
             .setBlurAutoUpdate(true)
 
             .setBlurRadius(radius)
+
+        blur_view2.setupWith(rootView, RenderScriptBlur(this)) // or RenderEffectBlur
+            .setFrameClearDrawable(windowBackground) // Optional
+            .setBlurAutoUpdate(true)
+            .setBlurRadius(25f)
+
         isExpandFolder(true)
 //        val dialogLayer = AnyLayer.dialog(this)
 //        dialogLayer.contentView(R.layout.dialog_sign_up_for_login_tips)
@@ -150,26 +175,30 @@ class FolderActivity2 : AppCompatActivity() {
     /**
      * 根据Y轴方向的位置，找到RecyclerView对应的位置
      */
-    private fun findBestPosition(top: Int, recyclerView: RecyclerView): Int {
+    private fun findBestPosition(left: Int,top: Int, recyclerView: RecyclerView): Int {
         val adapterList = listAdapter.mList
         if (adapterList.isEmpty()) {
             return 0
         }
-
         val linearLayoutManager = (recyclerView.layoutManager as LinearLayoutManager?) ?: return 0
         val firstPosition = linearLayoutManager.findFirstVisibleItemPosition()
         val lastPosition = linearLayoutManager.findLastVisibleItemPosition()
-        for (i in firstPosition until lastPosition) {
+        for (i in firstPosition until lastPosition) { //遍历所有可见的view,
+            Log.d("firstPosition:lastPosition", "$firstPosition:$lastPosition")
             val childView = linearLayoutManager.findViewByPosition(i) ?: return 0
-            if (childView.top <= top) {
+            Log.d("findBestPosition", "childView.top: ${childView.top}, top: $top, childView.left: ${childView.left},  left: $left")
+            //逐一比对,在满足条件的view后面插入
+            if (childView.bottom <= top || childView.left <= left){
                 val nextView = linearLayoutManager.findViewByPosition(i + 1)
-                if (nextView == null || nextView.top >= top) {
+                if (nextView == null || (nextView.bottom >= top && nextView.left >= left)) {
+                    Log.d("findBestPosition", i.toString())
                     return i
                 }
             }
         }
         return 0
     }
+    //当前拖拽的文件夹postion
     var dragoutFolderPid=-1;
     var isExpandFolder=false;
     /**
@@ -181,31 +210,47 @@ class FolderActivity2 : AppCompatActivity() {
      */
     private fun notifyPreviewViewHolder(viewHolder: RecyclerView.ViewHolder?, left: Float, top: Float, activity: Boolean) {
 
-        Log.d("notifyPreviewViewHolder2", "isDragoutFolder:"+dragoutFolderPid)
-
+        Log.d("notifyPreviewViewHolder2", "left:"+left)
+        Log.d("notifyPreviewViewHolder2", "top:"+dragoutFolderPid)
         if (activity) {
             val targetLeft = recyclerView.left.toFloat()
             val targetRight = recyclerView.right.toFloat()
             val targetWith = recyclerView.width.toFloat() //文件夹内的图标将要移出的目标
-
+            val targetHeight = recyclerView.height.toFloat() //文件夹内的图标将要移出的目标
             val xStart = targetLeft - targetWith / 4
             val xEnd = targetRight - targetWith / 4
-            var itemwidth=recycler_view_folder.width.toFloat()
+            var itemwidth= viewHolder!!.itemView.width.toFloat()
+            var itemHeight= viewHolder!!.itemView.height.toFloat()
             if(dragoutFolderPid!=-1){
                 if(left in xStart..xEnd){
+                    val x = left - location[0]
                     val y = top - location[1]
-                    val position = findBestPosition(y.toInt(), recyclerView)
-                    Log.d("notifyPreviewViewHolder2", "left in xStart..xEnd:"+position)
+
+                    val position = findBestPosition(x.toInt(),y.toInt(), recyclerView)
+                 //   Log.d("notifyPreviewViewHolderfindBestPosition", "position:"+position)
 
                     updatePreviewPosition(position, viewHolder)
                 }else{
                     updatePreviewPosition(-1, viewHolder) //文件夹列表内
                 }
             }else{
-                if( left in -itemwidth..(recycler_view_folder.left.toFloat() - (itemwidth / 2))
-                    ||  left  in (recycler_view_folder.left.toFloat()+itemwidth-itemwidth/2)..targetWith){
+              //  Log.d("notifyPreviewViewHolderfindBestPosition", "top:"+(blur_view2.get ))
+              //  Log.d("notifyPreviewViewHolderfindBestPosition", "viewtop:"+(top ))
+                val x = folderLocation[0]
+                val y = folderLocation[1]
+
+                if (left in 0f..(x - (itemwidth /3*1))
+                    ||
+                    left  in (x+recycler_view_folder.width- (itemwidth /3*2))..targetWith
+                    ||
+                    top in 0f..(y - (itemHeight /3*1))
+                    ||
+                    top  in (y +recycler_view_folder.height - (itemHeight/3*2))..targetHeight
+                ){ //拖到外部文件
+                    val x = left - location[0]
                     val y = top - location[1]
-                    val position = findBestPosition(y.toInt(), recyclerView)
+                    val position = findBestPosition(x.toInt(),y.toInt(), recyclerView)
+                  //  Log.d("notifyPreviewViewHolderfindBestPosition", "position:"+position)
                     updatePreviewPosition(position, viewHolder)
                     dragoutFolderPid= viewHolder?.layoutPosition!!;
                     isExpandFolder(false);
@@ -216,7 +261,7 @@ class FolderActivity2 : AppCompatActivity() {
 
         } else {//拖拽结束
             if(dragoutFolderPid!=-1){
-                recycler_view_folder?.visibility=View.GONE
+                blur_view?.visibility=View.GONE
             }
             dragoutFolderPid=-1;
             replacePreview(viewHolder)
@@ -229,9 +274,13 @@ class FolderActivity2 : AppCompatActivity() {
         recycler_view_folder?.isEnabled=isExpandFolder
         recycler_view_folder?.background = isExpandFolder.let {
             if (isExpandFolder) {
-                ColorDrawable(Color.WHITE)
+                ColorDrawable(Color.WHITE).apply {
+                alpha = 180
+                }
             } else {
-                ColorDrawable(Color.TRANSPARENT)
+                ColorDrawable(Color.WHITE).apply {
+                    alpha = 0
+                }
             }
         }
         folderAdapter.isSHow=isExpandFolder;
@@ -244,8 +293,10 @@ class FolderActivity2 : AppCompatActivity() {
         }
         if (isExpandFolder){
             blur_view.setBlurEnabled(true)
+            blur_view2.setBlurEnabled(true)
         }else{
             blur_view.setBlurEnabled(false)
+            blur_view2.setBlurEnabled(false)
         }
     }
 
@@ -263,10 +314,10 @@ class FolderActivity2 : AppCompatActivity() {
                 folderData?.list?.remove(data)
             }
             // 移除空的文件夹
-            dataList.removeAll {
-                val folderData = it as? FolderData
-                folderData?.list?.isEmpty() ?: false
-            }
+//            dataList.removeAll {
+//                val folderData = it as? FolderData
+//                folderData?.list?.isEmpty() ?: false
+//            }
             dataList.remove(previewData)
             dataList.add(previewPosition, data)
             listAdapter.notifyDataSetChanged()
@@ -305,10 +356,17 @@ class FolderActivity2 : AppCompatActivity() {
 
     private fun getTestList(): MutableList<IDragData> {
         val list = mutableListOf<IDragData>()
-        for (index in 0..50) {
-            val data = SimpleData(index)
-            list.add(data)
+        val size=20
+        for (index in 0..size) {
+            if (index==size) {
+               var l= FolderData();
+                l.setFolderId(defaultFolderId)
+                list.add(l)
+            }else{
+                list.add(SimpleData(index))
+            }
         }
+
         return list
     }
 

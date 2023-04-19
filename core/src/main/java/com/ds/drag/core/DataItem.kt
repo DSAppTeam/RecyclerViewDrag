@@ -1,4 +1,4 @@
-package com.ds.drag.demo
+package com.ds.drag.core
 
 import java.util.concurrent.CopyOnWriteArrayList
 

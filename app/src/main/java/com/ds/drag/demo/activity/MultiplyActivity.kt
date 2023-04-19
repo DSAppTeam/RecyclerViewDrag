@@ -5,11 +5,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.ds.drag.core.IDragData
+import com.ds.drag.core.SimpleData
 import com.ds.drag.core.callback.DragTouchCallback
-import com.ds.drag.demo.IDragData
 import com.ds.drag.demo.R
 import com.ds.drag.demo.SimpleAdapter
-import com.ds.drag.demo.SimpleData
 import com.ds.drag.demo.handler.MultiplyHandlerImpl
 
 /**

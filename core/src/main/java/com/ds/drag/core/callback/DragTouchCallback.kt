@@ -6,7 +6,10 @@ import android.util.Log
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.ItemTouchHelper.ACTION_STATE_DRAG
 import androidx.recyclerview.widget.RecyclerView
+import com.ds.drag.core.FolderData
 import com.ds.drag.core.IDragAdapter
+import com.ds.drag.core.IDragData
+import com.ds.drag.core.IDragItem
 import kotlin.math.abs
 
 /**
@@ -32,6 +35,7 @@ class DragTouchCallback(
 ) : ItemTouchHelper.Callback() {
 
     companion object {
+        const val defaultFolderId = "闲置功能"
         const val TAG = "DragTouchCallback"
     }
     // 合并逻辑的处理
@@ -66,7 +70,11 @@ class DragTouchCallback(
             }
         }
         val swipeFlags = 0
-        return makeMovementFlags(dragFlags, swipeFlags)
+        if((recyclerView.adapter as IDragAdapter).getDragData().get(viewHolder.adapterPosition) is FolderData){
+            return makeMovementFlags(0, 0)
+        }else{
+            return makeMovementFlags(dragFlags, swipeFlags)
+        }
     }
 
     override fun getAnimationDuration(recyclerView: RecyclerView, animationType: Int, animateDx: Float, animateDy: Float): Long {
@@ -182,14 +190,32 @@ class DragTouchCallback(
         }
         Log.d(TAG, "findMergeTarget: position = ${target?.adapterPosition}")
         if (target != null) {
-            onStashMergeHolder(selected, target)
+            /**
+             * 1. 判断当前拖入的图标类型，如果是文件夹类型，则不触发合并
+             *  {@link #com.ds.drag.core.callback.DragTouchCallback.defaultFolderId}
+             */
+            //判断当前拖入的图标类型，如果是文件夹类型，则不触发合并
+            var targetItem=   dragAdapter.getDragData().get(target.adapterPosition);
+            if(targetItem is FolderData){ //拖入目标是文件夹.目前只能拖入默认创建的文件夹
+              //  if( (target as FolderData ).getFolderId().equals(defaultFolderId)){ //
+                    onStashMergeHolder(selected, target)
+              //  }
+            }
+
         } else {
             onClearMergeHolder()
         }
         winnerSetX.clear()
         winnerSetY.clear()
     }
-
+     fun  判断文件夹ID(): String? {
+        dragAdapter.getDragData().forEach {
+            if (it is FolderData) {
+                return it.getFolderId();
+            }
+        }
+         return null
+    }
 
     /**
      * 找到可以触发合并的ViewHolder，暂存对应的ViewHolder信息；
@@ -262,8 +288,8 @@ class DragTouchCallback(
             mDragHandler?.onStopDrag(performMerge)
         }
     }
-
-
+    //第一个合并的文件夹id
+    var firstFolderId:String?=null
     /**
      * 执行合并操作，并触发回调
      */
@@ -284,7 +310,8 @@ class DragTouchCallback(
     override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
         val fromPosition = viewHolder.adapterPosition
         val toPosition = target.adapterPosition
-        val swap = mDragHandler?.swapPosition(fromPosition, toPosition) ?: false
+        //todo 如果目标是文件夹则不交换位置
+        val swap = mDragHandler?.swapPosition(fromPosition, toPosition)?: false  && dragAdapter.getDragData().get(toPosition) !is FolderData
         if (swap) { // 交换位置
             mDragHandler?.onBeforeSwap(fromPosition, toPosition)
             val list = dragAdapter.getDragData()

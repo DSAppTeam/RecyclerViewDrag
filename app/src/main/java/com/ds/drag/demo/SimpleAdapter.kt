@@ -11,8 +11,12 @@ import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.ds.drag.core.FolderData
 import com.ds.drag.core.IDragAdapter
+import com.ds.drag.core.IDragData
 import com.ds.drag.core.IDragItem
+import com.ds.drag.core.PreviewData
+import com.ds.drag.core.SimpleData
 import kotlinx.android.synthetic.main.item_folder_data_layout.view.*
 import kotlinx.android.synthetic.main.item_preview_data_layout.view.*
 import java.lang.Math.log

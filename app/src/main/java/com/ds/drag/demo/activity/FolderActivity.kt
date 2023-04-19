@@ -8,6 +8,10 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.ds.drag.core.FolderData
+import com.ds.drag.core.IDragData
+import com.ds.drag.core.PreviewData
+import com.ds.drag.core.SimpleData
 import com.ds.drag.core.callback.DragTouchCallback
 import com.ds.drag.demo.*
 import com.ds.drag.demo.handler.FolderHandlerImpl
@@ -79,7 +83,7 @@ class FolderActivity : AppCompatActivity() {
         recycler_view_folder.layoutManager = LinearLayoutManager(this)
         recycler_view_folder.adapter = folderAdapter
         // 拖拽位置监听，实现将文件夹的item拖回左侧列表
-        val itemTouchCallback = FolderItemDragCallback()
+        val itemTouchCallback = FolderItemDragCallback(folderAdapter)
         itemTouchCallback.itemLocationListener = { viewHolder, left, top, activity ->
             Log.d("FolderActivity", "initFolderList: left $left, top $top")
             notifyPreviewViewHolder(viewHolder, left, top, activity)

@@ -3,9 +3,11 @@ package com.ds.drag.demo.handler
 import android.annotation.SuppressLint
 import android.util.Log
 import androidx.recyclerview.widget.RecyclerView
+import com.ds.drag.core.FolderData
+import com.ds.drag.core.IDragData
+import com.ds.drag.core.SimpleData
 import com.ds.drag.core.callback.IDragHandler
-import com.ds.drag.demo.IDragData
-import com.ds.drag.demo.FolderData
+import com.ds.drag.demo.*
 import com.ds.drag.demo.SimpleAdapter
 
 /**
@@ -33,6 +35,13 @@ class FolderHandlerImpl(private val recyclerView: RecyclerView, private val adap
 
     override fun onAfterSwap(fromPosition: Int, toPosition: Int) {
         recyclerView.adapter?.notifyItemMoved(fromPosition, toPosition)
+        //修改后的数据回传给原列表
+        adapter.mList.forEachIndexed { index, iDragData ->
+            if(iDragData is SimpleData){
+                Log.d(TAG, "onAfterSwap: $index -> ${(iDragData as SimpleData).value}")
+            }
+        }
+
     }
 
     override fun onMergeData(fromPosition: Int, toPosition: Int) {

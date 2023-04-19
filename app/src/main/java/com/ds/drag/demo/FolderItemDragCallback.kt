@@ -4,6 +4,10 @@ import android.graphics.Canvas
 import android.util.Log
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.ds.drag.core.FolderData
+import com.ds.drag.core.IDragAdapter
+import com.ds.drag.core.IDragData
+import com.ds.drag.core.callback.IDragHandler
 
 /**
  * author : linzheng
@@ -12,12 +16,17 @@ import androidx.recyclerview.widget.RecyclerView
  * desc   : 文件夹内的item拖拽回调
  * version: 1.0
  */
-class FolderItemDragCallback : ItemTouchHelper.Callback() {
+class FolderItemDragCallback(private val dragAdapter: IDragAdapter) : ItemTouchHelper.Callback() {
 
     companion object {
         private val TAG = "FolderItemDragCallback"
     }
 
+    fun setDragHandler(handler: IDragHandler) {
+        this.mDragHandler = handler
+    }
+    // 合并逻辑的处理
+    private var mDragHandler: IDragHandler? = null
 
     var itemLocationListener: ((viewHolder: RecyclerView.ViewHolder?, left: Float, top: Float, activity: Boolean) -> Unit)? = null
 
@@ -30,8 +39,19 @@ class FolderItemDragCallback : ItemTouchHelper.Callback() {
     }
 
     override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
-
-        return false
+        val fromPosition = viewHolder.adapterPosition
+        val toPosition = target.adapterPosition
+        val swap = mDragHandler?.swapPosition(fromPosition, toPosition)?: false
+        if (swap) { // 交换位置
+            mDragHandler?.onBeforeSwap(fromPosition, toPosition)
+            val list = dragAdapter.getDragData()
+            if (list is MutableList) {
+                val item = list.removeAt(fromPosition)
+                list.add(toPosition, item)
+            }
+            mDragHandler?.onAfterSwap(fromPosition, toPosition)
+        }
+        return swap
     }
 
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {

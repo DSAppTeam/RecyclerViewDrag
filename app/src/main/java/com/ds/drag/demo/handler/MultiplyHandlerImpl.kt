@@ -3,10 +3,10 @@ package com.ds.drag.demo.handler
 import android.annotation.SuppressLint
 import android.util.Log
 import androidx.recyclerview.widget.RecyclerView
+import com.ds.drag.core.IDragData
+import com.ds.drag.core.SimpleData
 import com.ds.drag.core.callback.IDragHandler
-import com.ds.drag.demo.IDragData
 import com.ds.drag.demo.SimpleAdapter
-import com.ds.drag.demo.SimpleData
 
 /**
  * author : linzheng

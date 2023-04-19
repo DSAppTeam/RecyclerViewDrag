@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.ds.drag.core.IDragData
+import com.ds.drag.core.SimpleData
 import kotlinx.android.synthetic.main.item_folder_item_layout.view.*
 
 /**
