@@ -63,7 +63,7 @@ class TestDragCallback(val adapter: SimpleAdapter) : ItemTouchHelper.Callback() 
 
 
     override fun getMovementFlags(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder): Int {
-        val flag = ItemTouchHelper.UP or ItemTouchHelper.DOWN
+        val flag = ItemTouchHelper.UP or ItemTouchHelper.DOWN or ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
         return makeMovementFlags(flag, 0)
     }
 

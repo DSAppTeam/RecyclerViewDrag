@@ -9,11 +9,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.DSDrag">
+
         <activity
-            android:name=".activity.FolderActivity"
-            android:exported="false" />
-        <activity
-            android:name=".activity.MainActivity"
+            android:name=".activity.FolderActivity2"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -26,6 +24,7 @@
         <activity android:name=".activity.MultiplyActivity" />
         <activity android:name=".activity.NotDragHandlerImplActivity" />
         <activity android:name=".activity.TestDragActivity" />
+<!--        <activity android:name=".activity.FolderActivity2" />-->
     </application>
 
 </manifest>

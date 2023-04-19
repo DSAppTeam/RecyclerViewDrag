@@ -2,6 +2,8 @@ package com.ds.drag.demo
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Color
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +15,7 @@ import com.ds.drag.core.IDragAdapter
 import com.ds.drag.core.IDragItem
 import kotlinx.android.synthetic.main.item_folder_data_layout.view.*
 import kotlinx.android.synthetic.main.item_preview_data_layout.view.*
+import java.lang.Math.log
 
 /**
  * author : linzheng
@@ -43,6 +46,7 @@ class SimpleAdapter(private val context: Context, private val inFolder: Boolean 
         }
     }
 
+    var isSHow=true;
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseDataVH {
         val layoutInflater = LayoutInflater.from(context)
@@ -61,12 +65,18 @@ class SimpleAdapter(private val context: Context, private val inFolder: Boolean 
             }
         }
     }
-
     override fun onBindViewHolder(holder: BaseDataVH, position: Int) {
 
         if (inFolder) {
+            Log.d("onBindViewHolder", "onBindViewHolder:"+position)
 
-            holder.itemView.setBackgroundResource(R.drawable.se_folder_bg)
+            if(!isSHow){
+                holder.itemView.visibility=View.GONE
+                Log.d("onBindViewHolder", "是否透明:"+isSHow)
+            }else{
+                holder.itemView.visibility=View.VISIBLE
+                holder.itemView.setBackgroundResource(R.drawable.se_folder_bg)
+            }
         }
 
         holder.bindData(mList[position])
@@ -179,7 +189,7 @@ class SimpleViewHolder(itemView: View) : BaseDataVH(itemView) {
  */
 class FolderViewHolder(itemView: View) : BaseDataVH(itemView) {
 
-
+    val 透明=false;
     override fun bindData(data: IDragData) {
         val folderData = data as FolderData
         val context = itemView.context

@@ -25,7 +25,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         btn_folder.setOnClickListener {
-            val intent = Intent(this, FolderActivity::class.java)
+            val intent = Intent(this, FolderActivity2::class.java)
             startActivity(intent)
 
         }

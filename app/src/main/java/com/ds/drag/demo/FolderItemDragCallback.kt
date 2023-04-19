@@ -35,6 +35,7 @@ class FolderItemDragCallback : ItemTouchHelper.Callback() {
     }
 
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+        Log.d("onSwiped", "onSwiped:  "+direction)
     }
 
 
@@ -55,7 +56,7 @@ class FolderItemDragCallback : ItemTouchHelper.Callback() {
         val y = parentLocation[1] + top + dY
         itemLocationListener?.invoke(viewHolder, x, y, isCurrentlyActive)
         Log.d(TAG, "onChildDrawOver: top $x, left $y")
-
+        Log.d(TAG, "onChildDrawOver: actionState："+actionState)
     }
 
 

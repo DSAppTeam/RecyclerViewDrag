@@ -61,6 +61,9 @@ class DragTouchCallback(
             if (horizontal) {
                 dragFlags = dragFlags.or(ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT)
             }
+            if(vertical && horizontal){
+                dragFlags = dragFlags.or(ItemTouchHelper.UP or ItemTouchHelper.DOWN or ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT)
+            }
         }
         val swipeFlags = 0
         return makeMovementFlags(dragFlags, swipeFlags)
