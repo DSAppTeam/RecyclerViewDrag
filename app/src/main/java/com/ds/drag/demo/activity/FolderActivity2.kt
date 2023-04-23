@@ -67,13 +67,13 @@ class FolderActivity2 : AppCompatActivity() {
         blur_view.visibility=View.GONE
     }
 
-
+    var spancount=4;
     /**
      * 初始化左侧列表
      */
     private fun initSimpleList() {
         recyclerView = findViewById(R.id.recycler_view)
-        recyclerView.layoutManager = GridLayoutManager(this,4,  LinearLayoutManager.VERTICAL,false)
+        recyclerView.layoutManager = GridLayoutManager(this,spancount,  LinearLayoutManager.VERTICAL,false)
         listAdapter.setData(getTestList())
         listAdapter.itemClickListener = { item ->
 //            if(isExpandFolder){
@@ -173,7 +173,7 @@ class FolderActivity2 : AppCompatActivity() {
        // super.onBackPressed()
     }
     /**
-     * 根据Y轴方向的位置，找到RecyclerView对应的位置
+     * 根据 X、Y轴方向的位置，找到RecyclerView对应的位置
      */
     private fun findBestPosition(left: Int,top: Int, recyclerView: RecyclerView): Int {
         val adapterList = listAdapter.mList
@@ -184,20 +184,32 @@ class FolderActivity2 : AppCompatActivity() {
         val firstPosition = linearLayoutManager.findFirstVisibleItemPosition()
         val lastPosition = linearLayoutManager.findLastVisibleItemPosition()
         for (i in firstPosition until lastPosition) { //遍历所有可见的view,
-            Log.d("firstPosition:lastPosition", "$firstPosition:$lastPosition")
-            val childView = linearLayoutManager.findViewByPosition(i) ?: return 0
-            Log.d("findBestPosition", "childView.top: ${childView.top}, top: $top, childView.left: ${childView.left},  left: $left")
+           val childView = linearLayoutManager.findViewByPosition(i) ?: return 0
             //逐一比对,在满足条件的view后面插入
-            if (childView.bottom <= top || childView.left <= left){
-                val nextView = linearLayoutManager.findViewByPosition(i + 1)
-                if (nextView == null || (nextView.bottom >= top && nextView.left >= left)) {
-                    Log.d("findBestPosition", i.toString())
+            if (childView?.bottom!! <= top || childView?.left!! <= left){
+                var nextViewPos=i + 1
+                val nextView = linearLayoutManager.findViewByPosition(nextViewPos)
+                if(nextView == null ){
                     return i
+                }else {
+                    if (nextViewPos % spancount == 0) { //grid布局的话,每行的最后一个要单独处理
+                        if(nextView.top >= top &&  nextView?.left==0 ){
+                            return i
+                        }
+                    }else{
+                        if (nextView.bottom >= top && (nextView.left >= left)) {
+                            return i
+                        }
+                    }
                 }
             }
         }
         return 0
     }
+
+
+
+
     //当前拖拽的文件夹postion
     var dragoutFolderPid=-1;
     var isExpandFolder=false;
@@ -210,19 +222,25 @@ class FolderActivity2 : AppCompatActivity() {
      */
     private fun notifyPreviewViewHolder(viewHolder: RecyclerView.ViewHolder?, left: Float, top: Float, activity: Boolean) {
 
-        Log.d("notifyPreviewViewHolder2", "left:"+left)
-        Log.d("notifyPreviewViewHolder2", "top:"+dragoutFolderPid)
         if (activity) {
             val targetLeft = recyclerView.left.toFloat()
             val targetRight = recyclerView.right.toFloat()
+            val targetTop = recyclerView.top.toFloat()
+            val targetBottom = recyclerView.bottom.toFloat()
             val targetWith = recyclerView.width.toFloat() //文件夹内的图标将要移出的目标
             val targetHeight = recyclerView.height.toFloat() //文件夹内的图标将要移出的目标
             val xStart = targetLeft - targetWith / 4
             val xEnd = targetRight - targetWith / 4
+
+            val yStart = targetTop - targetHeight / 4
+            val yEnd = targetBottom - targetWith / 4
             var itemwidth= viewHolder!!.itemView.width.toFloat()
             var itemHeight= viewHolder!!.itemView.height.toFloat()
-            if(dragoutFolderPid!=-1){
-                if(left in xStart..xEnd){
+            if(dragoutFolderPid!=-1){ //从文件夹拖出来以后
+                Log.d("notifyPreviewViewHolder", "文件夹内的图标在文件夹 外 拖动")
+                if(left in xStart..xEnd+itemwidth || top in yStart..yEnd+itemHeight){
+                    //打印left  xStart xEnd 的log
+                    Log.d("notifyPreviewViewHolder", "left:"+left)
                     val x = left - location[0]
                     val y = top - location[1]
 
@@ -231,9 +249,11 @@ class FolderActivity2 : AppCompatActivity() {
 
                     updatePreviewPosition(position, viewHolder)
                 }else{
+                    Log.d("notifyPreviewViewHolder", xEnd.toString())
                     updatePreviewPosition(-1, viewHolder) //文件夹列表内
                 }
-            }else{
+            }else{ //在文件夹中拖动
+                Log.d("notifyPreviewViewHolder", "文件夹内的图标在文件夹 内 拖动")
               //  Log.d("notifyPreviewViewHolderfindBestPosition", "top:"+(blur_view2.get ))
               //  Log.d("notifyPreviewViewHolderfindBestPosition", "viewtop:"+(top ))
                 val x = folderLocation[0]
@@ -356,16 +376,82 @@ class FolderActivity2 : AppCompatActivity() {
 
     private fun getTestList(): MutableList<IDragData> {
         val list = mutableListOf<IDragData>()
-        val size=20
-        for (index in 0..size) {
-            if (index==size) {
-               var l= FolderData();
-                l.setFolderId(defaultFolderId)
-                list.add(l)
-            }else{
-                list.add(SimpleData(index))
-            }
-        }
+
+        var simpleData=SimpleData(1)
+        simpleData.iconResId=R.drawable.gzhb
+        simpleData.titleName="工作汇报"
+        simpleData.unreadcount=0
+        list.add(simpleData)
+
+         simpleData=SimpleData(2)
+        simpleData.iconResId=R.drawable.gztz
+        simpleData.titleName="工作通知"
+        simpleData.unreadcount=1
+        list.add(simpleData)
+
+         simpleData=SimpleData(3)
+        simpleData.iconResId=R.drawable.spsx
+        simpleData.titleName="审批事项"
+        simpleData.unreadcount=5
+        list.add(simpleData)
+
+         simpleData=SimpleData(4)
+        simpleData.iconResId=R.drawable.kqdk
+        simpleData.titleName="考勤打卡"
+        simpleData.unreadcount=12
+        list.add(simpleData)
+
+         simpleData=SimpleData(5)
+        simpleData.iconResId=R.drawable.rwmb
+        simpleData.titleName="任务目标"
+        simpleData.unreadcount=13
+        list.add(simpleData)
+
+         simpleData=SimpleData(6)
+        simpleData.iconResId=R.drawable.wdyp
+        simpleData.titleName="我的云盘"
+        simpleData.unreadcount=12
+        list.add(simpleData)
+
+         simpleData=SimpleData(7)
+        simpleData.iconResId=R.drawable.txl
+        simpleData.titleName="通讯录"
+        simpleData.unreadcount=11
+        list.add(simpleData)
+
+         simpleData=SimpleData(8)
+        simpleData.iconResId=R.drawable.zdlc
+        simpleData.titleName="制度流程"
+        simpleData.unreadcount=1
+        list.add(simpleData)
+
+         simpleData=SimpleData(9)
+        simpleData.iconResId=R.drawable.glbm
+        simpleData.titleName="关联部门"
+        simpleData.unreadcount=2
+        list.add(simpleData)
+
+         simpleData=SimpleData(10)
+        simpleData.iconResId=R.drawable.glyg
+        simpleData.titleName="关联员工"
+        simpleData.unreadcount=23
+        list.add(simpleData)
+
+         simpleData=SimpleData(11)
+         simpleData.iconResId=R.drawable.bmlxd
+         simpleData.titleName="部门联系单"
+        simpleData.unreadcount=0
+        list.add(simpleData)
+
+         simpleData=SimpleData(12)
+        simpleData.iconResId=R.drawable.qtsx
+        simpleData.titleName="其他事项"
+        simpleData.unreadcount=11
+        list.add(simpleData)
+
+        var l= FolderData();
+        l.setFolderId(defaultFolderId)
+        list.add(l)
 
         return list
     }

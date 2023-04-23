@@ -38,8 +38,11 @@ interface IDragData {
  * 简单数据结构
  */
 class SimpleData(val value: Int) : IDragData {
-
+    var unreadcount: Int = 0
+    var iconResId: Int = 0
+    var titleName: String = ""
     var tempFolderId: String? = null
+
 
     override fun inFolder(): Boolean {
         return false
@@ -70,12 +73,24 @@ class FolderData : IDragData {
     private var id: String? = null
 
     // 文件夹内的数据列表
-    val list = CopyOnWriteArrayList<IDragData>()
+    val list = CopyOnWriteArrayList<SimpleData>()
 
     override fun inFolder(): Boolean {
         return false
     }
 
+    /**
+     * 获取未读数据
+     */
+    fun getUnreadcount():Int{
+        var count=0;
+        if(list!=null){
+            for (simpleData in list) {
+                count+=simpleData.unreadcount
+            }
+        }
+        return count;
+    }
     override fun setFolderId(folderId: String?) {
         this.id = folderId
     }
@@ -97,7 +112,6 @@ class FolderData : IDragData {
 class PreviewData : IDragData {
 
     var realData: SimpleData? = null
-
     override fun inFolder(): Boolean {
         return false
     }

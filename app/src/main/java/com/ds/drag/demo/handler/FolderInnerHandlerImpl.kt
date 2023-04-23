@@ -39,7 +39,7 @@ class FolderInnerHandlerImpl(private val recyclerView: RecyclerView,private val 
         //todo 文件夹展开内的图标换位后更新文件夹预览页面
         var list= (listAdapter.getDragData().get(listAdapter.getDragData().size-1) as FolderData).list
         list.clear()
-        list.addAll(adapter.getDragData())
+        list.addAll(adapter.getDragData() as  List<SimpleData>)
         listAdapter.notifyItemChanged(listAdapter.getDragData().size-1);
     }
 

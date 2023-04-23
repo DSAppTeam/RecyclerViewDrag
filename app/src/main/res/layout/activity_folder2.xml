@@ -22,27 +22,28 @@
         android:layout_height="match_parent"
         android:clipChildren="false"
         android:gravity="center"
-        android:clipToPadding="false"
        >
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:clipChildren="false"
             android:gravity="center"
-            android:clipToPadding="false"
             android:layout_gravity="center">
+
             <eightbitlab.com.blurview.BlurView
                 android:id="@+id/blur_view2"
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintDimensionRatio="1:1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintHeight="true"
+                app:layout_constraintHeight_min="300dp"
                 android:layout_gravity="center"
                 android:clipChildren="false"
-                android:clipToPadding="false">
+                app:layout_constrainedHeight="true"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintWidth_percent="0.75">
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recycler_view_folder"
@@ -52,8 +53,8 @@
                     android:layout_gravity="center"
                     android:background="@color/white"
                     android:clipChildren="false"
-                    tools:listitem="@layout/item_folder_data_layout"
-                    android:clipToPadding="false" />
+                    android:overScrollMode="never"
+                    tools:listitem="@layout/item_simple_data_layout" />
             </eightbitlab.com.blurview.BlurView>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </eightbitlab.com.blurview.BlurView>

@@ -58,7 +58,7 @@ class FolderHandlerImpl(private val recyclerView: RecyclerView, private val adap
             // 添加文件夹标识
             val folderId = toData.getFolderId()
             fromData.setFolderId(folderId)
-            toData.list.add(fromData)
+            toData.list.add(fromData as SimpleData)
             notifyDataSetChanged()
             mergedListener?.invoke(toData)
         } else {                            // 场景2：目标位置是文件夹
@@ -69,8 +69,8 @@ class FolderHandlerImpl(private val recyclerView: RecyclerView, private val adap
             folderTab.setFolderId(folderId)
             fromData.setFolderId(folderId)
             toData.setFolderId(folderId)
-            folderTab.list.add(toData)
-            folderTab.list.add(fromData)
+            folderTab.list.add(toData as SimpleData)
+            folderTab.list.add(fromData as SimpleData)
             // 添加文件夹数据，将选中的item移除
             list.add(toPosition, folderTab)
             list.remove(toData)
