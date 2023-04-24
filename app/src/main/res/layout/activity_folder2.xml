@@ -6,56 +6,47 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="#F8F8F8"
-    android:clipChildren="false"
     tools:context=".activity.FolderActivity"
     tools:ignore="MissingDefaultResource">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_view"
+        android:id="@+id/grvDesk"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
 
          />
     <eightbitlab.com.blurview.BlurView
-        android:id="@+id/blur_view"
+        android:id="@+id/deskBlurView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
         android:clipChildren="false"
+        android:layout_height="match_parent"
         android:gravity="center"
        >
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+        <eightbitlab.com.blurview.BlurView
+            android:id="@+id/deskFolderBlurView"
+            android:layout_width="300dp"
             android:clipChildren="false"
-            android:gravity="center"
-            android:layout_gravity="center">
+            android:layout_height="wrap_content"
+            app:layout_constraintHeight="true"
+            app:layout_constraintHeight_min="300dp"
+            android:layout_gravity="center"
+            app:layout_constrainedHeight="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintWidth_percent="0.75">
 
-            <eightbitlab.com.blurview.BlurView
-                android:id="@+id/blur_view2"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:layout_constraintHeight="true"
-                app:layout_constraintHeight_min="300dp"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/grvDeskFolder"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentEnd="true"
                 android:layout_gravity="center"
+                android:background="@color/white"
                 android:clipChildren="false"
-                app:layout_constrainedHeight="true"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintWidth_percent="0.75">
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recycler_view_folder"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentEnd="true"
-                    android:layout_gravity="center"
-                    android:background="@color/white"
-                    android:clipChildren="false"
-                    android:overScrollMode="never"
-                    tools:listitem="@layout/item_simple_data_layout" />
-            </eightbitlab.com.blurview.BlurView>
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                android:overScrollMode="never"
+                tools:listitem="@layout/item_simple_data_layout" />
+        </eightbitlab.com.blurview.BlurView>
     </eightbitlab.com.blurview.BlurView>
 </FrameLayout>

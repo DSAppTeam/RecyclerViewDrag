@@ -44,7 +44,7 @@
         android:orientation="horizontal">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_view"
+            android:id="@+id/grvDesk"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -53,7 +53,7 @@
             android:padding="4dp" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_view_folder"
+            android:id="@+id/grvDeskFolder"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"

@@ -54,7 +54,7 @@ class FolderActivity : AppCompatActivity() {
      * 初始化左侧列表
      */
     private fun initSimpleList() {
-        recyclerView = findViewById(R.id.recycler_view)
+        recyclerView = findViewById(R.id.grvDesk)
         recyclerView.layoutManager = LinearLayoutManager(this)
         listAdapter.setData(getTestList())
         listAdapter.itemClickListener = { item ->
@@ -80,15 +80,15 @@ class FolderActivity : AppCompatActivity() {
      * 初始化文件夹RecyclerView
      */
     private fun initFolderList() {
-        recycler_view_folder.layoutManager = LinearLayoutManager(this)
-        recycler_view_folder.adapter = folderAdapter
+        grvDeskFolder.layoutManager = LinearLayoutManager(this)
+        grvDeskFolder.adapter = folderAdapter
         // 拖拽位置监听，实现将文件夹的item拖回左侧列表
         val itemTouchCallback = FolderItemDragCallback(folderAdapter)
         itemTouchCallback.itemLocationListener = { viewHolder, left, top, activity ->
             Log.d("FolderActivity", "initFolderList: left $left, top $top")
             notifyPreviewViewHolder(viewHolder, left, top, activity)
         }
-        ItemTouchHelper(itemTouchCallback).attachToRecyclerView(recycler_view_folder)
+        ItemTouchHelper(itemTouchCallback).attachToRecyclerView(grvDeskFolder)
     }
 
     /**

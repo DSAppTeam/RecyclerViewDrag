@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:gravity="center">
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_view_folder"
+        android:id="@+id/grvDeskFolder"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"

@@ -10,7 +10,6 @@ import com.ds.drag.core.SimpleData
 import com.ds.drag.core.callback.DragTouchCallback
 import com.ds.drag.demo.R
 import com.ds.drag.demo.SimpleAdapter
-import com.ds.drag.demo.handler.AdditionHandlerImpl
 
 /**
  * author : linzheng
@@ -29,7 +28,7 @@ class NotDragHandlerImplActivity : AppCompatActivity() {
         setContentView(R.layout.activity_simple_handler)
         supportActionBar?.title = "没有处理器"
 
-        recyclerView = findViewById(R.id.recycler_view)
+        recyclerView = findViewById(R.id.grvDesk)
         recyclerView.layoutManager = LinearLayoutManager(this)
         mAdapter = SimpleAdapter(this)
         mAdapter.setData(getTestList())

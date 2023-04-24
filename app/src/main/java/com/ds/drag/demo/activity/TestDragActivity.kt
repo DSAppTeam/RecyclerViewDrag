@@ -24,7 +24,7 @@ import com.ds.drag.demo.SimpleAdapter
  */
 class TestDragActivity : AppCompatActivity() {
 
-    private val recyclerView: RecyclerView by lazy { findViewById(R.id.recycler_view) }
+    private val recyclerView: RecyclerView by lazy { findViewById(R.id.grvDesk) }
     private val mAdapter: SimpleAdapter by lazy { SimpleAdapter(this) }
 
 

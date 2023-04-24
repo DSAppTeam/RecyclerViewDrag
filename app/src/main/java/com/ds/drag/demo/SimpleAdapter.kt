@@ -212,7 +212,7 @@ class FolderViewHolder(itemView: View) : BaseDataVH(itemView) {
     override fun bindData(data: IDragData) {
         val folderData = data as FolderData
         val context = itemView.context
-        val recyclerView = itemView.findViewById<RecyclerView>(R.id.recycler_view)
+        val recyclerView = itemView.findViewById<RecyclerView>(R.id.grvDesk)
         recyclerView.layoutManager =GridLayoutManager(context,2,  LinearLayoutManager.VERTICAL,false)
         val folderAdapter = FolderAdapter(context)
         folderAdapter.setData(folderData.list)

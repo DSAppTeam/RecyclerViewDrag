@@ -30,7 +30,7 @@ class MultiplyActivity : AppCompatActivity() {
 
         supportActionBar?.title = "乘法逻辑"
 
-        recyclerView = findViewById(R.id.recycler_view)
+        recyclerView = findViewById(R.id.grvDesk)
         recyclerView.layoutManager = LinearLayoutManager(this)
         mAdapter = SimpleAdapter(this)
         mAdapter.setData(getTestList())

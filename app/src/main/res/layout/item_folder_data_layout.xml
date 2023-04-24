@@ -30,7 +30,7 @@
             app:layout_constraintVertical_chainStyle="packed">
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recycler_view"
+                android:id="@+id/grvDesk"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@drawable/se_folder_bg" />

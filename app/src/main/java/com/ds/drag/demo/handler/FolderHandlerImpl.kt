@@ -38,7 +38,7 @@ class FolderHandlerImpl(private val recyclerView: RecyclerView, private val adap
         //修改后的数据回传给原列表
         adapter.mList.forEachIndexed { index, iDragData ->
             if(iDragData is SimpleData){
-                Log.d(TAG, "onAfterSwap: $index -> ${(iDragData as SimpleData).value}")
+                Log.d(TAG, "onAfterSwap: $index -> ${(iDragData as SimpleData).id}")
             }
         }
 

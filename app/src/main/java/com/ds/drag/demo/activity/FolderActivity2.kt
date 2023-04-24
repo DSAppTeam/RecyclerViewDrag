@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.os.SystemClock
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
@@ -25,8 +24,9 @@ import com.ds.drag.demo.handler.FolderHandlerImpl
 import com.ds.drag.demo.handler.FolderInnerHandlerImpl
 import eightbitlab.com.blurview.RenderScriptBlur
 import kotlinx.android.synthetic.main.activity_folder.*
-import kotlinx.android.synthetic.main.activity_folder2.blur_view
-import kotlinx.android.synthetic.main.activity_folder2.blur_view2
+import kotlinx.android.synthetic.main.activity_folder2.deskBlurView
+import kotlinx.android.synthetic.main.activity_folder2.deskFolderBlurView
+import java.util.concurrent.CopyOnWriteArrayList
 
 
 /**
@@ -38,24 +38,24 @@ import kotlinx.android.synthetic.main.activity_folder2.blur_view2
  */
 class FolderActivity2 : AppCompatActivity() {
 
-    private lateinit var recyclerView: RecyclerView
+    private lateinit var grvDesk: RecyclerView
     // recyclerView 在 Window 中的坐标
     private val location: IntArray by lazy {
         val location = IntArray(2)
-        recyclerView.getLocationInWindow(location)
+        grvDesk.getLocationInWindow(location)
         return@lazy location
     }
     private val folderLocation: IntArray by lazy {
         val location = IntArray(2)
-        recycler_view_folder.getLocationInWindow(location)
+        grvDeskFolder.getLocationInWindow(location)
         return@lazy location
     }
     private var previewPosition = -1
 
     // 左侧列表
-    private val listAdapter by lazy { SimpleAdapter(this) }
+    private val deskAdapter by lazy { SimpleAdapter(this) }
     // 子列表
-    private val folderAdapter by lazy { SimpleAdapter(this, true) }
+    private val deskFolderAdapter by lazy { SimpleAdapter(this, true) }
     private var selectedItem: IDragData? = null
 
 
@@ -64,7 +64,7 @@ class FolderActivity2 : AppCompatActivity() {
         setContentView(R.layout.activity_folder2)
         initSimpleList()
         initFolderList()
-        blur_view.visibility=View.GONE
+        deskBlurView.visibility=View.GONE
     }
 
     var spancount=4;
@@ -72,10 +72,10 @@ class FolderActivity2 : AppCompatActivity() {
      * 初始化左侧列表
      */
     private fun initSimpleList() {
-        recyclerView = findViewById(R.id.recycler_view)
-        recyclerView.layoutManager = GridLayoutManager(this,spancount,  LinearLayoutManager.VERTICAL,false)
-        listAdapter.setData(getTestList())
-        listAdapter.itemClickListener = { item ->
+        grvDesk = findViewById(R.id.grvDesk)
+        grvDesk.layoutManager = GridLayoutManager(this,spancount,  LinearLayoutManager.VERTICAL,false)
+        deskAdapter.setData(getTestList())
+        deskAdapter.itemClickListener = { item ->
 //            if(isExpandFolder){
 //                isExpandFolder(false)
 //                blur_view.visibility=View.GONE
@@ -87,12 +87,12 @@ class FolderActivity2 : AppCompatActivity() {
                 }
           //  }
         }
-        blur_view.setOnClickListener {
+        deskBlurView.setOnClickListener {
            // isExpandFolder(false)
-            blur_view.visibility=View.GONE }
-        recyclerView.adapter = listAdapter
-        val itemTouchCallback = DragTouchCallback(listAdapter, vertical = true, horizontal = true)
-        val dragHandler = FolderHandlerImpl(recyclerView, listAdapter)
+            deskBlurView.visibility=View.GONE }
+        grvDesk.adapter = deskAdapter
+        val itemTouchCallback = DragTouchCallback(deskAdapter, vertical = true, horizontal = true)
+        val dragHandler = FolderHandlerImpl(grvDesk, deskAdapter)
         // 合并操作回调
         dragHandler.mergedListener = { item ->
             if (item == selectedItem) {
@@ -102,34 +102,34 @@ class FolderActivity2 : AppCompatActivity() {
         }
 
         itemTouchCallback.setDragHandler(dragHandler)
-        ItemTouchHelper(itemTouchCallback).attachToRecyclerView(recyclerView)
+        ItemTouchHelper(itemTouchCallback).attachToRecyclerView(grvDesk)
     }
 
     /**
      * 初始化文件夹RecyclerView
      */
     private fun initFolderList() {
-        recycler_view_folder.layoutManager = GridLayoutManager(this,3,  LinearLayoutManager.VERTICAL,false)
-        recycler_view_folder.adapter = folderAdapter
+        grvDeskFolder.layoutManager = GridLayoutManager(this,3,  LinearLayoutManager.VERTICAL,false)
+        grvDeskFolder.adapter = deskFolderAdapter
         // 拖拽位置监听，实现将文件夹的item拖回左侧列表
-        val itemTouchCallback = FolderItemDragCallback(folderAdapter)
+        val itemTouchCallback = FolderItemDragCallback(deskFolderAdapter)
         itemTouchCallback.itemLocationListener = { viewHolder, left, top, activity ->
             Log.d("FolderActivity", "initFolderList: left $left, top $top")
             notifyPreviewViewHolder(viewHolder, left, top, activity)
         }
-        val dragHandler = FolderInnerHandlerImpl(recycler_view_folder, folderAdapter,listAdapter)
+        val dragHandler = FolderInnerHandlerImpl(grvDeskFolder, deskFolderAdapter,deskAdapter)
         itemTouchCallback.setDragHandler(dragHandler)
-        ItemTouchHelper(itemTouchCallback).attachToRecyclerView(recycler_view_folder)
+        ItemTouchHelper(itemTouchCallback).attachToRecyclerView(grvDeskFolder)
     }
     /**
      * 用于显示文件夹内的list
      */
     private fun showFolderList(list: List<IDragData>?) {
-        blur_view.visibility=View.VISIBLE
+        deskBlurView.visibility=View.VISIBLE
         if (list != null) {
-            folderAdapter.setData(list)
+            deskFolderAdapter.setData(list)
         } else {
-            folderAdapter.setData(emptyList())
+            deskFolderAdapter.setData(emptyList())
         }
         val radius = 5f
         val decorView = window.decorView
@@ -137,13 +137,12 @@ class FolderActivity2 : AppCompatActivity() {
         // ViewGroup you want to start blur from. Choose root as close to BlurView in hierarchy as possible.
         val rootView = decorView.findViewById<View>(android.R.id.content) as ViewGroup
         val windowBackground = decorView.background
-        blur_view.setupWith(rootView, RenderScriptBlur(this)) // or RenderEffectBlur
+        deskBlurView.setupWith(rootView, RenderScriptBlur(this)) // or RenderEffectBlur
             .setFrameClearDrawable(windowBackground) // Optional
             .setBlurAutoUpdate(true)
-
             .setBlurRadius(radius)
 
-        blur_view2.setupWith(rootView, RenderScriptBlur(this)) // or RenderEffectBlur
+        deskFolderBlurView.setupWith(rootView, RenderScriptBlur(this)) // or RenderEffectBlur
             .setFrameClearDrawable(windowBackground) // Optional
             .setBlurAutoUpdate(true)
             .setBlurRadius(25f)
@@ -169,14 +168,14 @@ class FolderActivity2 : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        blur_view?.visibility = View.GONE
+        deskBlurView?.visibility = View.GONE
        // super.onBackPressed()
     }
     /**
      * 根据 X、Y轴方向的位置，找到RecyclerView对应的位置
      */
     private fun findBestPosition(left: Int,top: Int, recyclerView: RecyclerView): Int {
-        val adapterList = listAdapter.mList
+        val adapterList = deskAdapter.mList
         if (adapterList.isEmpty()) {
             return 0
         }
@@ -223,12 +222,12 @@ class FolderActivity2 : AppCompatActivity() {
     private fun notifyPreviewViewHolder(viewHolder: RecyclerView.ViewHolder?, left: Float, top: Float, activity: Boolean) {
 
         if (activity) {
-            val targetLeft = recyclerView.left.toFloat()
-            val targetRight = recyclerView.right.toFloat()
-            val targetTop = recyclerView.top.toFloat()
-            val targetBottom = recyclerView.bottom.toFloat()
-            val targetWith = recyclerView.width.toFloat() //文件夹内的图标将要移出的目标
-            val targetHeight = recyclerView.height.toFloat() //文件夹内的图标将要移出的目标
+            val targetLeft = grvDesk.left.toFloat()
+            val targetRight = grvDesk.right.toFloat()
+            val targetTop = grvDesk.top.toFloat()
+            val targetBottom = grvDesk.bottom.toFloat()
+            val targetWith = grvDesk.width.toFloat() //文件夹内的图标将要移出的目标
+            val targetHeight = grvDesk.height.toFloat() //文件夹内的图标将要移出的目标
             val xStart = targetLeft - targetWith / 4
             val xEnd = targetRight - targetWith / 4
 
@@ -243,8 +242,9 @@ class FolderActivity2 : AppCompatActivity() {
                     Log.d("notifyPreviewViewHolder", "left:"+left)
                     val x = left - location[0]
                     val y = top - location[1]
-
-                    val position = findBestPosition(x.toInt(),y.toInt(), recyclerView)
+                    val position = findBestPosition(x.toInt(),y.toInt(),
+                        grvDesk
+                    )
                  //   Log.d("notifyPreviewViewHolderfindBestPosition", "position:"+position)
 
                     updatePreviewPosition(position, viewHolder)
@@ -261,15 +261,17 @@ class FolderActivity2 : AppCompatActivity() {
 
                 if (left in 0f..(x - (itemwidth /3*1))
                     ||
-                    left  in (x+recycler_view_folder.width- (itemwidth /3*2))..targetWith
+                    left  in (x+grvDeskFolder.width- (itemwidth /3*2))..targetWith
                     ||
                     top in 0f..(y - (itemHeight /3*1))
                     ||
-                    top  in (y +recycler_view_folder.height - (itemHeight/3*2))..targetHeight
+                    top  in (y +grvDeskFolder.height - (itemHeight/3*2))..targetHeight
                 ){ //拖到外部文件
                     val x = left - location[0]
                     val y = top - location[1]
-                    val position = findBestPosition(x.toInt(),y.toInt(), recyclerView)
+                    val position = findBestPosition(x.toInt(),y.toInt(),
+                        grvDesk
+                    )
                   //  Log.d("notifyPreviewViewHolderfindBestPosition", "position:"+position)
                     updatePreviewPosition(position, viewHolder)
                     dragoutFolderPid= viewHolder?.layoutPosition!!;
@@ -281,7 +283,7 @@ class FolderActivity2 : AppCompatActivity() {
 
         } else {//拖拽结束
             if(dragoutFolderPid!=-1){
-                blur_view?.visibility=View.GONE
+                deskBlurView?.visibility=View.GONE
             }
             dragoutFolderPid=-1;
             replacePreview(viewHolder)
@@ -289,10 +291,10 @@ class FolderActivity2 : AppCompatActivity() {
         //isDragoutFolder=activity;
     }
     fun isExpandFolder(isExpandFolder:Boolean){
-        recycler_view_folder?.visibility=View.VISIBLE
+        grvDeskFolder?.visibility=View.VISIBLE
         this.isExpandFolder=isExpandFolder;
-        recycler_view_folder?.isEnabled=isExpandFolder
-        recycler_view_folder?.background = isExpandFolder.let {
+        grvDeskFolder?.isEnabled=isExpandFolder
+        grvDeskFolder?.background = isExpandFolder.let {
             if (isExpandFolder) {
                 ColorDrawable(Color.WHITE).apply {
                 alpha = 180
@@ -303,20 +305,20 @@ class FolderActivity2 : AppCompatActivity() {
                 }
             }
         }
-        folderAdapter.isSHow=isExpandFolder;
-        folderAdapter.mList.forEachIndexed { index, iDragData ->
+        deskFolderAdapter.isSHow=isExpandFolder;
+        deskFolderAdapter.mList.forEachIndexed { index, iDragData ->
             Log.d("dragoutFolderPid", "dragoutFolderPid:"+dragoutFolderPid)
             if(index!=dragoutFolderPid){
-                folderAdapter.notifyItemChanged(index)
+                deskFolderAdapter.notifyItemChanged(index)
             }else{
             }
         }
         if (isExpandFolder){
-            blur_view.setBlurEnabled(true)
-            blur_view2.setBlurEnabled(true)
+            deskBlurView.setBlurEnabled(true)
+            deskFolderBlurView.setBlurEnabled(true)
         }else{
-            blur_view.setBlurEnabled(false)
-            blur_view2.setBlurEnabled(false)
+            deskBlurView.setBlurEnabled(false)
+            deskFolderBlurView.setBlurEnabled(false)
         }
     }
 
@@ -324,11 +326,11 @@ class FolderActivity2 : AppCompatActivity() {
     private fun replacePreview(viewHolder: RecyclerView.ViewHolder?) {
         if (previewPosition >= 0) {
             val fromPosition = viewHolder?.adapterPosition ?: return
-            val folderList = folderAdapter.getDragData()
+            val folderList = deskFolderAdapter.getDragData()
             val data = folderList.removeAt(fromPosition)
-            folderAdapter.notifyDataSetChanged()
+            deskFolderAdapter.notifyDataSetChanged()
 
-            val dataList = listAdapter.getDragData()
+            val dataList = deskAdapter.getDragData()
             dataList.forEach {
                 val folderData = it as? FolderData
                 folderData?.list?.remove(data)
@@ -340,7 +342,7 @@ class FolderActivity2 : AppCompatActivity() {
 //            }
             dataList.remove(previewData)
             dataList.add(previewPosition, data)
-            listAdapter.notifyDataSetChanged()
+            deskAdapter.notifyDataSetChanged()
             previewPosition = -1
         }
     }
@@ -352,24 +354,24 @@ class FolderActivity2 : AppCompatActivity() {
      * 更新预览ViewHolder的位置
      */
     @SuppressLint("NotifyDataSetChanged")
-    private fun updatePreviewPosition(position: Int, viewHolder: RecyclerView.ViewHolder?) {
+    private fun updatePreviewPosition(position: Int, viewHolder: RecyclerView.ViewHolder) {
         if (previewPosition != position) {
             previewPosition = position
             Log.d("Dodge", "updatePreviewPosition: position = $position")
             if (position >= 0) {
-                val fromPosition = viewHolder?.adapterPosition ?: return
-                val simpleData = folderAdapter.getDragData().getOrNull(fromPosition) as? SimpleData
+                val fromPosition = viewHolder.adapterPosition
+                val simpleData = deskFolderAdapter.getDragData().getOrNull(fromPosition) as? SimpleData
                 previewData.realData = simpleData
-                val dataList = listAdapter.getDragData()
+                val dataList = deskAdapter.getDragData()
                 dataList.remove(previewData)
                 dataList.add(position, previewData)
-                listAdapter.notifyDataSetChanged()
+                deskAdapter.notifyDataSetChanged()
             } else {
-                val dataList = listAdapter.getDragData()
+                val dataList = deskAdapter.getDragData()
                 val oldList = dataList.toList()
                 dataList.remove(previewData)
                 val result = DiffUtil.calculateDiff(DiffCallback(oldList, dataList))
-                result.dispatchUpdatesTo(listAdapter)
+                result.dispatchUpdatesTo(deskAdapter)
             }
         }
     }
@@ -431,29 +433,36 @@ class FolderActivity2 : AppCompatActivity() {
         simpleData.unreadcount=2
         list.add(simpleData)
 
-         simpleData=SimpleData(10)
-        simpleData.iconResId=R.drawable.glyg
-        simpleData.titleName="关联员工"
-        simpleData.unreadcount=23
-        list.add(simpleData)
 
-         simpleData=SimpleData(11)
-         simpleData.iconResId=R.drawable.bmlxd
-         simpleData.titleName="部门联系单"
-        simpleData.unreadcount=0
-        list.add(simpleData)
-
-         simpleData=SimpleData(12)
-        simpleData.iconResId=R.drawable.qtsx
-        simpleData.titleName="其他事项"
-        simpleData.unreadcount=11
-        list.add(simpleData)
 
         var l= FolderData();
         l.setFolderId(defaultFolderId)
+        l.list.addAll(convertData())
         list.add(l)
 
         return list
+    }
+
+    fun convertData(): CopyOnWriteArrayList<SimpleData>  {
+        val da =CopyOnWriteArrayList<SimpleData>()
+        var simpleData=SimpleData(10)
+        simpleData.iconResId=R.drawable.glyg
+        simpleData.titleName="关联员工"
+        simpleData.unreadcount=23
+        da.add(simpleData)
+
+        simpleData=SimpleData(11)
+        simpleData.iconResId=R.drawable.bmlxd
+        simpleData.titleName="部门联系单"
+        simpleData.unreadcount=0
+        da.add(simpleData)
+
+        simpleData=SimpleData(12)
+        simpleData.iconResId=R.drawable.qtsx
+        simpleData.titleName="其他事项"
+        simpleData.unreadcount=11
+        da.add(simpleData)
+        return da
     }
 
 

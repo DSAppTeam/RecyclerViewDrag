@@ -8,7 +8,7 @@
     tools:ignore="MissingDefaultResource">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_view"
+        android:id="@+id/grvDesk"
         android:paddingStart="12dp"
         android:paddingEnd="12dp"
         android:clipChildren="false"

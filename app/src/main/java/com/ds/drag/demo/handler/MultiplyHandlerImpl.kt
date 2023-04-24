@@ -43,8 +43,8 @@ class MultiplyHandlerImpl(private val recyclerView: RecyclerView, private val ad
             return
         }
 
-        val value1 = (fromData as? SimpleData)?.value
-        val value2 = (toData as? SimpleData)?.value
+        val value1 = (fromData as? SimpleData)?.id
+        val value2 = (toData as? SimpleData)?.id
         if (value1 != null && value2 != null) {
             val newValue = value1 * value2
             val data = SimpleData(newValue)

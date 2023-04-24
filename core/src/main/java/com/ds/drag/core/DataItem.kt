@@ -37,7 +37,7 @@ interface IDragData {
 /**
  * 简单数据结构
  */
-class SimpleData(val value: Int) : IDragData {
+class SimpleData(val id: Int) : IDragData {
     var unreadcount: Int = 0
     var iconResId: Int = 0
     var titleName: String = ""
