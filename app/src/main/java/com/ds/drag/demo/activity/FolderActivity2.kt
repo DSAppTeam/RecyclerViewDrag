@@ -22,6 +22,7 @@ import com.ds.drag.core.callback.DragTouchCallback.Companion.defaultFolderId
 import com.ds.drag.demo.*
 import com.ds.drag.demo.handler.FolderHandlerImpl
 import com.ds.drag.demo.handler.FolderInnerHandlerImpl
+import com.shencoder.pagergridlayoutmanager.PagerGridLayoutManager
 import eightbitlab.com.blurview.RenderScriptBlur
 import kotlinx.android.synthetic.main.activity_folder.*
 import kotlinx.android.synthetic.main.activity_folder2.deskBlurView
@@ -109,7 +110,12 @@ class FolderActivity2 : AppCompatActivity() {
      * 初始化文件夹RecyclerView
      */
     private fun initFolderList() {
-        grvDeskFolder.layoutManager = GridLayoutManager(this,3,  LinearLayoutManager.VERTICAL,false)
+    //    grvDeskFolder.layoutManager = GridLayoutManager(this,3,  LinearLayoutManager.VERTICAL,false)
+
+        val layoutManager = PagerGridLayoutManager(
+            3, 3, PagerGridLayoutManager.HORIZONTAL
+        )
+        grvDeskFolder.layoutManager =    layoutManager;
         grvDeskFolder.adapter = deskFolderAdapter
         // 拖拽位置监听，实现将文件夹的item拖回左侧列表
         val itemTouchCallback = FolderItemDragCallback(deskFolderAdapter)
@@ -258,14 +264,17 @@ class FolderActivity2 : AppCompatActivity() {
               //  Log.d("notifyPreviewViewHolderfindBestPosition", "viewtop:"+(top ))
                 val x = folderLocation[0]
                 val y = folderLocation[1]
-
-                if (left in 0f..(x - (itemwidth /3*1))
-                    ||
-                    left  in (x+grvDeskFolder.width- (itemwidth /3*2))..targetWith
-                    ||
+                Log.d("notifyPreviewViewHolderfindBestPosition", "top:"+top)
+               Log.d("notifyPreviewViewHolderfindBestPosition", "y:"+y)
+                Log.d("notifyPreviewViewHolderfindBestPosition", "(y +grvDeskFolder.height - (itemHeight/3*2)):"+(y +grvDeskFolder.height - (itemHeight/3*2)))
+                if (
+//                    left in -Float.MAX_VALUE..(x - (itemwidth /3*1))
+//                    ||
+//                    left  in (x+grvDeskFolder.width- (itemwidth /3*2))..Float.MAX_VALUE
+//                    ||
                     top in 0f..(y - (itemHeight /3*1))
                     ||
-                    top  in (y +grvDeskFolder.height - (itemHeight/3*2))..targetHeight
+                    top  in (y +grvDeskFolder.height - (itemHeight/3*2))..Float.MAX_VALUE
                 ){ //拖到外部文件
                     val x = left - location[0]
                     val y = top - location[1]
@@ -385,53 +394,7 @@ class FolderActivity2 : AppCompatActivity() {
         simpleData.unreadcount=0
         list.add(simpleData)
 
-         simpleData=SimpleData(2)
-        simpleData.iconResId=R.drawable.gztz
-        simpleData.titleName="工作通知"
-        simpleData.unreadcount=1
-        list.add(simpleData)
 
-         simpleData=SimpleData(3)
-        simpleData.iconResId=R.drawable.spsx
-        simpleData.titleName="审批事项"
-        simpleData.unreadcount=5
-        list.add(simpleData)
-
-         simpleData=SimpleData(4)
-        simpleData.iconResId=R.drawable.kqdk
-        simpleData.titleName="考勤打卡"
-        simpleData.unreadcount=12
-        list.add(simpleData)
-
-         simpleData=SimpleData(5)
-        simpleData.iconResId=R.drawable.rwmb
-        simpleData.titleName="任务目标"
-        simpleData.unreadcount=13
-        list.add(simpleData)
-
-         simpleData=SimpleData(6)
-        simpleData.iconResId=R.drawable.wdyp
-        simpleData.titleName="我的云盘"
-        simpleData.unreadcount=12
-        list.add(simpleData)
-
-         simpleData=SimpleData(7)
-        simpleData.iconResId=R.drawable.txl
-        simpleData.titleName="通讯录"
-        simpleData.unreadcount=11
-        list.add(simpleData)
-
-         simpleData=SimpleData(8)
-        simpleData.iconResId=R.drawable.zdlc
-        simpleData.titleName="制度流程"
-        simpleData.unreadcount=1
-        list.add(simpleData)
-
-         simpleData=SimpleData(9)
-        simpleData.iconResId=R.drawable.glbm
-        simpleData.titleName="关联部门"
-        simpleData.unreadcount=2
-        list.add(simpleData)
 
 
 
@@ -462,6 +425,56 @@ class FolderActivity2 : AppCompatActivity() {
         simpleData.titleName="其他事项"
         simpleData.unreadcount=11
         da.add(simpleData)
+
+
+        simpleData=SimpleData(5)
+        simpleData.iconResId=R.drawable.rwmb
+        simpleData.titleName="任务目标"
+        simpleData.unreadcount=13
+        da.add(simpleData)
+
+        simpleData=SimpleData(6)
+        simpleData.iconResId=R.drawable.wdyp
+        simpleData.titleName="我的云盘"
+        simpleData.unreadcount=12
+        da.add(simpleData)
+
+        simpleData=SimpleData(7)
+        simpleData.iconResId=R.drawable.txl
+        simpleData.titleName="通讯录"
+        simpleData.unreadcount=11
+        da.add(simpleData)
+
+        simpleData=SimpleData(8)
+        simpleData.iconResId=R.drawable.zdlc
+        simpleData.titleName="制度流程"
+        simpleData.unreadcount=1
+        da.add(simpleData)
+
+        simpleData=SimpleData(9)
+        simpleData.iconResId=R.drawable.glbm
+        simpleData.titleName="关联部门"
+        simpleData.unreadcount=2
+        da.add(simpleData)
+
+        simpleData=SimpleData(3)
+        simpleData.iconResId=R.drawable.spsx
+        simpleData.titleName="审批事项"
+        simpleData.unreadcount=5
+        da.add(simpleData)
+
+        simpleData=SimpleData(4)
+        simpleData.iconResId=R.drawable.kqdk
+        simpleData.titleName="考勤打卡"
+        simpleData.unreadcount=12
+        da.add(simpleData)
+
+        simpleData=SimpleData(2)
+        simpleData.iconResId=R.drawable.gztz
+        simpleData.titleName="工作通知"
+        simpleData.unreadcount=1
+        da.add(simpleData)
+
         return da
     }
 

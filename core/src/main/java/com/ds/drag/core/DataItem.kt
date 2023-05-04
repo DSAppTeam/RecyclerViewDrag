@@ -100,7 +100,7 @@ class FolderData : IDragData {
     }
 
     override fun isCanDrag(): Boolean {
-        return true
+        return false
     }
 
 }

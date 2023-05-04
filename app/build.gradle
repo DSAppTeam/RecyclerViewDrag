@@ -46,4 +46,5 @@ dependencies {
     implementation 'q.rorbin:badgeview:1.1.3'
     implementation "com.github.goweii:AnyLayer:5.0.0-beta3"
     implementation 'com.github.Dimezis:BlurView:version-2.0.3'
+    implementation 'com.github.shenbengit:PagerGridLayoutManager:1.1.8'
 }

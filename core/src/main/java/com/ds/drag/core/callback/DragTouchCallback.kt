@@ -70,11 +70,11 @@ class DragTouchCallback(
             }
         }
         val swipeFlags = 0
-        if((recyclerView.adapter as IDragAdapter).getDragData().get(viewHolder.adapterPosition) is FolderData){
-            return makeMovementFlags(0, 0)
-        }else{
+//        if((recyclerView.adapter as IDragAdapter).getDragData().get(viewHolder.adapterPosition) is FolderData){
+//            return makeMovementFlags(0, 0)
+//        }else{
             return makeMovementFlags(dragFlags, swipeFlags)
-        }
+//        }
     }
 
     override fun getAnimationDuration(recyclerView: RecyclerView, animationType: Int, animateDx: Float, animateDy: Float): Long {

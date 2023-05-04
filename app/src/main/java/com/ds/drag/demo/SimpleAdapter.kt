@@ -69,7 +69,12 @@ class SimpleAdapter(private val context: Context, private val inFolder: Boolean 
 
             }
             else -> {
-                val view = layoutInflater.inflate(R.layout.item_simple_data_layout, parent, false)
+                var view:View?=null
+                if(inFolder){
+                    view = layoutInflater.inflate(R.layout.item_simple_data_infolder_layout, parent, false)
+                }else{
+                    view = layoutInflater.inflate(R.layout.item_simple_data_layout, parent, false)
+                }
                 SimpleViewHolder(view)
             }
         }
