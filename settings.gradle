@@ -3,6 +3,7 @@ pluginManagement {
         gradlePluginPortal()
         google()
         mavenCentral()
+        jcenter()
     }
 }
 dependencyResolutionManagement {
@@ -11,6 +12,7 @@ dependencyResolutionManagement {
         google()
         maven { url 'https://jitpack.io' }
         mavenCentral()
+        jcenter()
     }
 }
 rootProject.name = "RecyclerViewDrag"

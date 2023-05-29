@@ -5,11 +5,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.ds.drag.core.IDragData
+import com.ds.drag.core.SimpleData
 import com.ds.drag.core.callback.DragTouchCallback
-import com.ds.drag.demo.IDragData
 import com.ds.drag.demo.R
 import com.ds.drag.demo.SimpleAdapter
-import com.ds.drag.demo.SimpleData
 import com.ds.drag.demo.handler.AdditionHandlerImpl
 
 /**
@@ -29,7 +29,7 @@ class AdditionActivity : AppCompatActivity() {
         setContentView(R.layout.activity_simple_handler)
         supportActionBar?.title = "加法逻辑"
 
-        recyclerView = findViewById(R.id.recycler_view)
+        recyclerView = findViewById(R.id.grvDesk)
         recyclerView.layoutManager = LinearLayoutManager(this)
         mAdapter = SimpleAdapter(this)
         mAdapter.setData(getTestList())

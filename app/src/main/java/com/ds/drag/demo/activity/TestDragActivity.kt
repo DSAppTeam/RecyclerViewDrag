@@ -10,10 +10,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.ds.drag.demo.IDragData
+import com.ds.drag.core.IDragData
+import com.ds.drag.core.SimpleData
 import com.ds.drag.demo.R
 import com.ds.drag.demo.SimpleAdapter
-import com.ds.drag.demo.SimpleData
 
 /**
  * author : linzheng
@@ -24,7 +24,7 @@ import com.ds.drag.demo.SimpleData
  */
 class TestDragActivity : AppCompatActivity() {
 
-    private val recyclerView: RecyclerView by lazy { findViewById(R.id.recycler_view) }
+    private val recyclerView: RecyclerView by lazy { findViewById(R.id.grvDesk) }
     private val mAdapter: SimpleAdapter by lazy { SimpleAdapter(this) }
 
 
@@ -63,7 +63,7 @@ class TestDragCallback(val adapter: SimpleAdapter) : ItemTouchHelper.Callback() 
 
 
     override fun getMovementFlags(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder): Int {
-        val flag = ItemTouchHelper.UP or ItemTouchHelper.DOWN
+        val flag = ItemTouchHelper.UP or ItemTouchHelper.DOWN or ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
         return makeMovementFlags(flag, 0)
     }
 

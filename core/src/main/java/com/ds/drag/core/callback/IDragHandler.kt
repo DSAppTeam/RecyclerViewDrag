@@ -27,7 +27,7 @@ interface IDragHandler {
     fun onAfterSwap(fromPosition: Int, toPosition: Int)
 
     /**
-     * 合并逻辑
+     * 合并逻辑,返回合并后的文件夹id
      */
     fun onMergeData(fromPosition: Int, toPosition: Int)
 

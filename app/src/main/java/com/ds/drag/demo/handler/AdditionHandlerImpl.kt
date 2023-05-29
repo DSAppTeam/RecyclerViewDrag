@@ -3,10 +3,10 @@ package com.ds.drag.demo.handler
 import android.annotation.SuppressLint
 import android.util.Log
 import androidx.recyclerview.widget.RecyclerView
+import com.ds.drag.core.IDragData
+import com.ds.drag.core.SimpleData
 import com.ds.drag.core.callback.IDragHandler
-import com.ds.drag.demo.IDragData
 import com.ds.drag.demo.SimpleAdapter
-import com.ds.drag.demo.SimpleData
 
 /**
  * author : linzheng
@@ -43,8 +43,8 @@ class AdditionHandlerImpl(private val recyclerView: RecyclerView, private val ad
             return
         }
 
-        val value1 = (fromData as? SimpleData)?.value
-        val value2 = (toData as? SimpleData)?.value
+        val value1 = (fromData as? SimpleData)?.id
+        val value2 = (toData as? SimpleData)?.id
         if (value1 != null && value2 != null) {
             val newValue = value1 + value2
             val data = SimpleData(newValue)

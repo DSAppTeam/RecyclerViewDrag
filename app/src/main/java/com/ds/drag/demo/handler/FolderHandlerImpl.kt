@@ -3,9 +3,11 @@ package com.ds.drag.demo.handler
 import android.annotation.SuppressLint
 import android.util.Log
 import androidx.recyclerview.widget.RecyclerView
+import com.ds.drag.core.FolderData
+import com.ds.drag.core.IDragData
+import com.ds.drag.core.SimpleData
 import com.ds.drag.core.callback.IDragHandler
-import com.ds.drag.demo.IDragData
-import com.ds.drag.demo.FolderData
+import com.ds.drag.demo.*
 import com.ds.drag.demo.SimpleAdapter
 
 /**
@@ -33,6 +35,13 @@ class FolderHandlerImpl(private val recyclerView: RecyclerView, private val adap
 
     override fun onAfterSwap(fromPosition: Int, toPosition: Int) {
         recyclerView.adapter?.notifyItemMoved(fromPosition, toPosition)
+        //修改后的数据回传给原列表
+        adapter.mList.forEachIndexed { index, iDragData ->
+            if(iDragData is SimpleData){
+                Log.d(TAG, "onAfterSwap: $index -> ${(iDragData as SimpleData).id}")
+            }
+        }
+
     }
 
     override fun onMergeData(fromPosition: Int, toPosition: Int) {
@@ -49,7 +58,7 @@ class FolderHandlerImpl(private val recyclerView: RecyclerView, private val adap
             // 添加文件夹标识
             val folderId = toData.getFolderId()
             fromData.setFolderId(folderId)
-            toData.list.add(fromData)
+            toData.list.add(fromData as SimpleData)
             notifyDataSetChanged()
             mergedListener?.invoke(toData)
         } else {                            // 场景2：目标位置是文件夹
@@ -60,8 +69,8 @@ class FolderHandlerImpl(private val recyclerView: RecyclerView, private val adap
             folderTab.setFolderId(folderId)
             fromData.setFolderId(folderId)
             toData.setFolderId(folderId)
-            folderTab.list.add(toData)
-            folderTab.list.add(fromData)
+            folderTab.list.add(toData as SimpleData)
+            folderTab.list.add(fromData as SimpleData)
             // 添加文件夹数据，将选中的item移除
             list.add(toPosition, folderTab)
             list.remove(toData)
